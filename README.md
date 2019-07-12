@@ -1,6 +1,6 @@
-# Game Maker: Danniel Sotelo
+# Danniel Sotelo
 
-# Game Name: Little Warrior
+# Little Warrior
 
 ## Project Description
   
