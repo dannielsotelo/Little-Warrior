@@ -1,56 +1,47 @@
-// for this project I heavily referenced Jude Southworth's github 
-// @ https://github.com/JellyWX/adventure-rs/blob/85903392d74b58889ede2a84b6dc5308f02594d6/src/main.rs
-// I also referenced a code review thread on their project 
-// @ https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure
-
 use std::io::{stdin, BufRead};
 
 struct Game {
-    cur_room: usize,
+    room: usize,
     inventory: Vec<Item>,
     rooms: Vec<Room>,
 }
 
 impl Game {
     fn room(&self) -> &Room {
-        &self.rooms[self.cur_room]
+        &self.rooms[self.room]
     }
 
     fn room_mut(&mut self) -> &mut Room {
-        &mut self.rooms[self.cur_room]
+        &mut self.rooms[self.room]
     }
 
-    // display the exits for the current room to output
     fn exits(&self) {
-        // print room name and number of exits
-        println!("{} has {} exits:", 
-        &self.room().name,
-        &self.room().exits.len());
+        println!(
+            "{} has {} exits:",
+            &self.room().name,
+            &self.room().exits.len()
+        );
 
-        //prints index for each exit and exit name
         for (index, exit) in self.room().exits.iter().enumerate() {
-            println!("\n({}) {}", index, self.rooms[*exit].name);
+            println!("({}) {}", index, self.rooms[*exit].name);
         }
     }
 
-    // displays items in inventory. logic is very similar to fn exits()
     fn view_inventory(&self) {
-        println!("You have {} items: ", self.inventory.len());
+        println!("You have {} items:", self.inventory.len());
 
         for (index, item) in self.inventory.iter().enumerate() {
             println!("\n({}) {}", index, item.name);
         }
     }
 
-    // move to a new room
     fn move_room(&mut self, room: usize) {
-        self.cur_room = self.room().exits[room];
+        self.room = self.room().exits[room];
     }
 
     fn take(&mut self, item: usize) -> &Item {
         let item = self.room_mut().items.remove(item);
         self.inventory.push(item);
-        // returning the last item in inventory? perhaps to display?
         self.inventory.last().unwrap()
     }
 }
@@ -66,11 +57,7 @@ struct Room {
     items: Vec<Item>,
 }
 
-// so far the functions in this impl of Room are 
-// actions that can be performed while in a room
 impl Room {
-    // when user types look the description of the room 
-    // will print
     fn look(&self) {
         println!("{}", self.description)
     }
@@ -78,7 +65,7 @@ impl Room {
     fn inspect(&self) {
         println!("{} has {} items:", &self.name, &self.items.len());
 
-        for (index, item) in self.items.iter(). enumerate() {
+        for (index, item) in self.items.iter().enumerate() {
             println!("\n({}) {}", index, item.name);
         }
     }
@@ -88,17 +75,44 @@ fn main() {
     let rooms = vec![
         Room {
             name: String::from("Bedroom"),
-            description: String::from("A messy little girl's room. There is a window and a door to the hallway leading to the living room."),
-            exits: vec![1],
-            items: vec![ 
-            Item {
-                name: String::from("Backpack"),
+            description: String::from("A tidy, clean bedroom with 1 door and a balcony"),
+            exits: vec![1, 2],
+            items: vec![ Item {
+                name: String::from("Key"),
             }]
+        },
+
+        Room {
+            name: String::from("Balcony"),
+            description: String::from("An outdoor balcony that overlooks a gray garden"),
+            exits: vec![3],
+            items: vec![]
+        },
+
+        Room {
+            name: String::from("Landing"),
+            description: String::from("A carpetted landing with doors leading off it. It overlooks a large living space. A set of stairs leads down"),
+            exits: vec![1],
+            items: vec![]
+        },
+
+        Room {
+            name: String::from("Doghouse"),
+            description: String::from("a dog house"),
+            exits: vec![1],
+            items: vec![]
+        },
+
+        Room {
+            name: String::from("Bathroom"),
+            description: String::from("a bathroom with a toilet"),
+            exits: vec![0],
+            items: vec![]
         },
     ];
 
     let mut player = Game {
-        cur_room: 0,
+        room: 0,
         rooms,
         inventory: vec![],
     };
@@ -171,5 +185,4 @@ fn main() {
             _ => {}
         }
     }
-
 }
