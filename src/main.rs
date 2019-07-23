@@ -11,7 +11,7 @@ use std::io::{stdin, BufRead};
 // the inventory of the game, and keeps track of all the rooms
 // in the game
 struct Game {
-    room: usize,
+    current_room: usize,
     inventory: Vec<Item>,
     rooms: Vec<Room>,
 }
@@ -19,15 +19,15 @@ struct Game {
 // implemenation for the Game Struct
 impl Game {
     // a getter that returns the current room
-    fn room(&self) -> &Room {
-        &self.rooms[self.room]
+    fn cur_room(&self) -> &Room {
+        &self.rooms[self.current_room]
     }
 
     // allows us to modify the items in a room.
     // used when an item is taken from a room.
     // the room must be updated to display changes.
     fn room_mut(&mut self) -> &mut Room {
-        &mut self.rooms[self.room]
+        &mut self.rooms[self.current_room]
     }
 
     //  First, this fn exits() display the current room
@@ -35,15 +35,15 @@ impl Game {
     fn exits(&self) {
         println!(
             "{} has {} exits:",
-            &self.room().name,
-            &self.room().exits.len()
+            &self.cur_room().name,
+            &self.cur_room().exits.len()
         );
 
         // loops through the exits vector to display
         // each elements index, and then the name of 
         // the element at that index.
         // Example: [0] Bathroom
-        for (index, exit) in self.room().exits.iter().enumerate() {
+        for (index, exit) in self.cur_room().exits.iter().enumerate() {
             println!("({}) {}", index, self.rooms[*exit].name);
         }
     }
@@ -66,7 +66,8 @@ impl Game {
     // room we just moved to. Take a usize as a parameter.
     // The usize is the index of the exit the player took
     fn move_room(&mut self, room: usize) {
-        self.room = self.room().exits[room];
+        // the room in .exits[room] is the input paramter. Not referencing room in anothe struct
+        self.current_room = self.cur_room().exits[room];
     }
 
     // allows the player to take item from a room
@@ -119,6 +120,7 @@ impl Room {
 
 fn main() {
     // creates a vector of rooms to be used in the game
+    // TODO: change name of rooms to something unique. too many rooms in this program
     let rooms = vec![
         Room {
             name: String::from("Bedroom"),
@@ -160,7 +162,7 @@ fn main() {
 
     // instansiate the player object which is of type 'Game'
     let mut player = Game {
-        room: 0,
+        current_room: 0,
         rooms,
         inventory: vec![],
     };
@@ -169,7 +171,8 @@ fn main() {
 
     // this for loop and the logic for using stdin is taken from 
     // https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure
-    // written by user Shepmaster @ https://codereview.stackexchange.com/users/32521/shepmaster
+    // I used the comment written by user Shepmaster @ https://codereview.stackexchange.com/users/32521/shepmaster
+    
     // takes stdin input and splits the input by white space. 
     let stdin = stdin();
     for line in stdin.lock().lines() {
@@ -182,7 +185,7 @@ fn main() {
             // retrieved and the .look() is executed on that current room
             // the room description is then displayed
             Some("look") => {
-                player.room().look();
+                player.cur_room().look();
                 player.exits();
             }
 
@@ -214,7 +217,7 @@ fn main() {
                 player.move_room(room_no);
 
                 // displays player moved to new room
-                println!("You moved to {}", player.room().name);
+                println!("You moved to {}", player.cur_room().name);
             }
 
             // when player enters `inventory` view_inventory is executed
@@ -226,7 +229,7 @@ fn main() {
             // when player enters 'inspect' the inspect() function is executed
             // on the current room and the items in the room are displayed
             Some("inspect") => {
-                player.room().inspect();
+                player.cur_room().inspect();
             }
 
             // when player enters 'take' an args vector is created. The vector
