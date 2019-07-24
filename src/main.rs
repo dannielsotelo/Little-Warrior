@@ -23,6 +23,10 @@ struct Game {
 }
 
 // implemenation for the Game Struct
+// &self is a parameter for all functions
+// inside an `impl` for a struct. Even
+// if the function only prints there still must
+// be an &self as an input parameter for the function
 impl Game {
     // a getter that returns the current room
     fn cur_room(&self) -> &Room {
@@ -87,13 +91,35 @@ impl Game {
         self.inventory.last().unwrap()
     }
 
+    // fn that displays the instructions commands. 
     fn instruction(&self) {
         println!("\nIn command line type in:");
         println!("\t`look' to look around the current room");
         println!("\t`inspect' to inspect the items in the current room.");
         println!("\t`move <room no.>' to switch room.");
         println!("\t`inventory' to view your current inventory.");
-        println!("\t`take <item no.>' to take item from current room.");
+        println!("\t`take <item no.>' to take item from current room.\n");
+    }
+
+    // displays the story of the game.
+    fn story(&self) {
+        println!("\n\tOur story begins with a seven year old girl named Victoria. Like every other school day
+        she wakes up and gets ready for school. However, today is a very special day. Today, Victoria will
+        walk to school by herself! This is a walk she has done hundred of times since kindergarten. Will she
+        make it to school with not problems or is today different? Is today the day she will have to become a
+        Little Warrior!\n")
+    }
+
+    // displays the title of the game. used http://www.kammerl.de/ascii/AsciiSignature.php for text to ascii art
+    fn game_title(&self) {
+        println!("
+                    dP        dP d888888P d888888P dP         88888888b    dP   dP   dP  .d888888   888888ba   888888ba  dP  .88888.   888888ba  
+                    88        88    88       88    88         88           88   88   88 d8'    88   88    `8b  88    `8b 88 d8'   `8b  88    `8b 
+                    88        88    88       88    88        a88aaaa       88  .8P  .8P 88aaaaa88a a88aaaa8P' a88aaaa8P' 88 88     88 a88aaaa8P' 
+                    88        88    88       88    88         88           88  d8'  d8' 88     88   88   `8b.  88   `8b. 88 88     88  88   `8b. 
+                    88        88    88       88    88         88           88.d8P8.d8P  88     88   88     88  88     88 88 Y8.   .8P  88     88 
+                    88888888P dP    dP       dP    88888888P  88888888P    8888' Y88'   88     88   dP     dP  dP     dP dP  `8888P'   dP     dP 
+                    ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
     }
 }
 
@@ -184,6 +210,8 @@ fn main() {
 
     // will need to make this a function so it can be called to view instruction
     //println!("Type `look' to look around and 'inspect' to inspect items in room. Type `move <room no>' to switch room");
+    player.game_title();
+    player.story();
     player.instruction();
 
 
