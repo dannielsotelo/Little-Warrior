@@ -164,38 +164,36 @@ fn main() {
     // TODO: change name of rooms to something unique. too many rooms in this program
     let rooms = vec![
         Room {
-            name: String::from("Bedroom"),
-            description: String::from("A tidy, clean bedroom with 1 door and a balcony"),
-            exits: vec![3, 4],
-            items: vec![ Item {
-                name: String::from("Key"),
-            }]
-        },
-
-        Room {
-            name: String::from("Balcony"),
-            description: String::from("An outdoor balcony that overlooks a gray garden"),
-            exits: vec![3],
-            items: vec![]
-        },
-
-        Room {
-            name: String::from("Landing"),
-            description: String::from("A carpetted landing with doors leading off it. It overlooks a large living space. A set of stairs leads down"),
+            name: format!("Bedroom"),
+            description: format!("Victoria wakes up an changes for school. She finds that her mother and father \nare not home. Being a responsible girl she knows she has to go to school.\n"),
             exits: vec![1],
             items: vec![]
         },
 
         Room {
-            name: String::from("Doghouse"),
-            description: String::from("a dog house"),
+            name: format!("Living Room"),
+            description: format!("Victoria heads to the living room. The living room is clean and she sees her pet cat Stormy sleeping on the couch."),
+            exits: vec![2],
+            items: vec![]
+        },
+
+        Room {
+            name: format!("Landing"),
+            description: format!("A carpetted landing with doors leading off it. It overlooks a large living space. A set of stairs leads down"),
             exits: vec![1],
             items: vec![]
         },
 
         Room {
-            name: String::from("Bathroom"),
-            description: String::from("a bathroom with a toilet"),
+            name: format!("Doghouse"),
+            description: format!("Doghouse"),
+            exits: vec![1],
+            items: vec![]
+        },
+
+        Room {
+            name: format!("Bathroom"),
+            description: format!("a bathroom with a toilet"),
             exits: vec![0],
             items: vec![]
         },
@@ -213,6 +211,7 @@ fn main() {
     player.game_title();
     player.story();
     player.instruction();
+    player.cur_room().look();
 
 
     // this for loop and the logic for using stdin is taken from
