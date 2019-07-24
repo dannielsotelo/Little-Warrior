@@ -13,10 +13,10 @@
 
 #### Referenced
 
-for this project I heavily referenced Jude Southworth's github 
-@ https://github.com/JellyWX/adventure-rs/blob/85903392d74b58889ede2a84b6dc5308f02594d6/src/main.rs
-I also referenced a code review thread on their project 
-@ https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure
+  for this project I heavily referenced Jude Southworth's github 
+  @ https://github.com/JellyWX/adventure-rs/blob/85903392d74b58889ede2a84b6dc5308f02594d6/src/main.rs
+  I also referenced a code review thread on their project 
+  @ https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure
 
 
 ## Example Image of what my game will look like
