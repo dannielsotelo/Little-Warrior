@@ -4,7 +4,7 @@
 # distribution of this software for license terms.
 
 [package]
-name = "stats"
+name = "little_warrior"
 version = "0.1.0"
 authors = ["Danniel Sotelo <dsotelo@pdx.edu>"]
 edition = "2018"
