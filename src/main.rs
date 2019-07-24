@@ -1,13 +1,19 @@
-// for this project I heavily referenced Jude Southworth's github 
+// for this project I heavily referenced Jude Southworth's github
 // @ https://github.com/JellyWX/adventure-rs/blob/85903392d74b58889ede2a84b6dc5308f02594d6/src/main.rs
-// I also referenced a code review thread on their project 
+// I also referenced a code review thread on their project
 // @ https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure
 
-// allows program to read standard input and utilized BufRead 
+// For structs and enums that you define, you’ll need to implement PartialEq to assert that values of
+// those types are equal or not equal. You’ll need to implement Debug to print the values when the assertion
+// fails. Because both traits are derivable traits, as mentioned in Listing 5-12 in Chapter 5, this is
+// usually as straightforward as adding the #[derive(PartialEq, Debug)] annotation to your struct or enum
+// definition. See Appendix C, “Derivable Traits,” for more details about these and other derivable traits.
+
+// allows program to read standard input and utilized BufRead
 // to be able to read line by line
 use std::io::{stdin, BufRead};
 
-// struct of Game. Contains the current room the game is in, 
+// struct of Game. Contains the current room the game is in,
 // the inventory of the game, and keeps track of all the rooms
 // in the game
 struct Game {
@@ -40,7 +46,7 @@ impl Game {
         );
 
         // loops through the exits vector to display
-        // each elements index, and then the name of 
+        // each elements index, and then the name of
         // the element at that index.
         // Example: [0] Bathroom
         for (index, exit) in self.cur_room().exits.iter().enumerate() {
@@ -53,7 +59,7 @@ impl Game {
         println!("You have {} items:", self.inventory.len());
 
         // loops through the item vector to display
-        // each elements index, and then the name of the 
+        // each elements index, and then the name of the
         // element at that index.
         // Example: [0] Backpack
         for (index, item) in self.inventory.iter().enumerate() {
@@ -79,6 +85,15 @@ impl Game {
         self.inventory.push(item);
         // returns the item pushed.
         self.inventory.last().unwrap()
+    }
+
+    fn instruction(&self) {
+        println!("\nIn command line type in:");
+        println!("\t`look' to look around the current room");
+        println!("\t`inspect' to inspect the items in the current room.");
+        println!("\t`move <room no.>' to switch room.");
+        println!("\t`inventory' to view your current inventory.");
+        println!("\t`take <item no.>' to take item from current room.");
     }
 }
 
@@ -167,21 +182,27 @@ fn main() {
         inventory: vec![],
     };
 
-    println!("Type `look' to look around and 'inspect' to inspect items in room. Type `move <room no>' to switch room");
+    // will need to make this a function so it can be called to view instruction
+    //println!("Type `look' to look around and 'inspect' to inspect items in room. Type `move <room no>' to switch room");
+    player.instruction();
 
-    // this for loop and the logic for using stdin is taken from 
+
+    // this for loop and the logic for using stdin is taken from
     // https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure
     // I used the comment written by user Shepmaster @ https://codereview.stackexchange.com/users/32521/shepmaster
-    
-    // takes stdin input and splits the input by white space. 
+
+    // takes stdin input and splits the input by white space.
     let stdin = stdin();
     for line in stdin.lock().lines() {
         let input = line.unwrap_or_else(|e| panic!("Error occured reading stdin: {}", e));
         let mut commands = input.trim().split_whitespace();
 
+        //player.instruction();
+
+
         // commands records all stdin entered by the player.
         match commands.next() {
-            // when player enters `look` the current room is 
+            // when player enters `look` the current room is
             // retrieved and the .look() is executed on that current room
             // the room description is then displayed
             Some("look") => {
@@ -263,7 +284,10 @@ fn main() {
                 println!("You collected {}", item.name);
             }
             // any other case
-            _ => {}
+            _ => {
+                println!("\nPlease enter a proper command!");
+                player.instruction();
+            }
         }
     }
 }

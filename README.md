@@ -11,6 +11,14 @@
   When starting up the game the player will be presented with a menu of options to perform and a 
   description of their surroundings. The player will then try to go to school.
 
+#### Referenced
+
+for this project I heavily referenced Jude Southworth's github 
+@ https://github.com/JellyWX/adventure-rs/blob/85903392d74b58889ede2a84b6dc5308f02594d6/src/main.rs
+I also referenced a code review thread on their project 
+@ https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure
+
+
 ## Example Image of what my game will look like
   
   Image is taken from my computer while playing a text based game made by Steve Klabnik. My game will have more 
