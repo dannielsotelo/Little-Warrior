@@ -67,7 +67,7 @@ impl Game {
         // element at that index.
         // Example: [0] Backpack
         for (index, item) in self.inventory.iter().enumerate() {
-            println!("\n({}) {}", index, item.name);
+            println!("({}) {}", index, item.name);
         }
     }
 
@@ -128,6 +128,10 @@ struct Item {
     name: String,
 }
 
+struct Enemy {
+    name: String,
+}
+
 // struct of Room. Contains the name of the room as a String,
 // the description of the room as a String, a vector of exits,
 // and a vector of items
@@ -164,39 +168,151 @@ fn main() {
     // TODO: change name of rooms to something unique. too many rooms in this program
     let rooms = vec![
         Room {
-            name: format!("Bedroom"),
+            name: format!("Bedroom"), // 0
             description: format!("Victoria wakes up an changes for school. She finds that her mother and father \nare not home. Being a responsible girl she knows she has to go to school.\n"),
             exits: vec![1],
             items: vec![]
         },
 
         Room {
-            name: format!("Living Room"),
+            name: format!("Living Room"), //1
             description: format!("Victoria heads to the living room. The living room is clean and she sees her pet cat Stormy sleeping on the couch."),
+            exits: vec![2,0],
+            items: vec![ Item {
+                name: format!("Backpack")
+            }]
+        },
+
+        Room {
+            name: format!("Outside Condo Complex"), // 2
+            description: format!("Victoria is now outside her condo. Outside the weather is sunny and temperature is mild.\n She walks past the other condos heading towards school."),
+            exits: vec![3,1,4],
+            items: vec![]
+        },
+
+        Room {
+            name: format!("Main Street"), // 3
+            description: format!("Victoria is now facing the main street the condo complex is of off. The street is to busy to cross and to walk next to."),
             exits: vec![2],
             items: vec![]
         },
 
+        // will need to implement enemies once player reaches this room. Will also need to implement hit actions/point possibly
         Room {
-            name: format!("Landing"),
-            description: format!("A carpetted landing with doors leading off it. It overlooks a large living space. A set of stairs leads down"),
-            exits: vec![1],
+            name: format!("Path"), //4
+            description: format!("Victoria is walking through a path in a wooden area. She sees a small creature in the middle of the path."),
+            exits: vec![2,5],
+            items: vec![ Item {
+                name: format!("Sword")
+            }]
+        },
+
+        Room {
+            name: format!("Portal"), //5
+            description: format!("Victoria is floating through a blue wormhole. She appears to have control of which direction to go."),
+            exits: vec![4, 6],
             items: vec![]
         },
 
         Room {
-            name: format!("Doghouse"),
-            description: format!("Doghouse"),
-            exits: vec![1],
+            name: format!("Portal Cave Dark Zone"), //6
+            description: format!("Victoria falls out of the portal into a dark zone of a cave. \nThe air is stale and the only light in the room is from the blue portal. Maybe there is something in the cave conveniently placed to light our path?"),
+            exits: vec![5, 7, 8],
+            items: vec![ Item {
+                name: format!("Flashlight")
+            }]
+        },
+
+        // perhaps goblin here or silent cave path
+        Room {
+            name: format!("Noisy cave path"), //7
+            description: format!("Victoria takes the noisy cave path. She is scared and hopes the noise is nothing.\n As she points her flashlight around she notices the noise is water dripping down from the walls of the cave."),
+            exits: vec![6, 9],
+            items: vec![]
+        },
+
+        // perhaps gobling here or noisy cave path
+        Room {
+            name: format!("Silent cave path"), // 8
+            description: format!("Victoria take the silent cave path. The room as very dark but there appears to be nothing in this cave room.\n Victoria then steps on something hard. She looks down and sees a skeletal remains!\n
+                                  Out of nowhere a goblin comes out to attack her!"),
+            exits: vec![6, 9],
             items: vec![]
         },
 
         Room {
-            name: format!("Bathroom"),
-            description: format!("a bathroom with a toilet"),
-            exits: vec![0],
-            items: vec![]
+            name: format!("Light at the end of the cave"), // 9
+            description: format!("After a grueling trek through the cave passages Victoria finally sees daylight! While walking towards the daylight something catches her eye.\n
+                                  There is something shiny on the ground."),
+            exits: vec![7, 8, 10],
+            items: vec![ Item {
+                name: format!("Shiny Ring")
+            }]
         },
+
+        // no enemy here
+        // if time implement a dead end from that the player has to return back to "outside the cave"
+        Room {
+            name: format!("Outside the Cave"), // 10
+            description: format!("Finally! Victoria has exited the cave! She opens up her backpack and find a water bottle her dad always packs in her backpack.\n
+                                  She hopes her parents are okay. She knows she has to continue to defeat the evil witch. After drinkin some water Victoria places\n
+                                  the water bottle in her backpack."),
+            exits: vec![9, 11],
+        },
+
+        // enemies: troll, give troll the shiny ring
+        Room {
+            name: format!("Bridge"), // 11
+            description: format!("Victoria walks towards the bridge and starts to cross it. 'HEY! NO ONE CROSSES THIS BRIDGE WITHOUT PAYING TOLL. I have to save up\n
+                                to buy a new ring since I lost my last one."),
+            exits: vec![10, 12],
+        },
+
+        // figure out a way to change sword to Warrior Sword. Additionally, find a way for the wizard to open a portal
+        Room {
+            name: format!("Field"), // 12
+            description: format!("After crossing the bridge our Little Warrior rests in the field next to a tree. The shade feels nice\n.
+                                 She starts dozing off when a voice speaks to her. 'Hello little one. I am Zolo the Magical Wizard. I have\n
+                                 watching you through my crystal ball and am impressed with your progress. I know you are on a quest to\n
+                                 the Evil Witch,' said the Zolo. Victoria draws her sword thinking Zolo may attack her. Zolo says, 'No\n
+                                 worries Little Warrior. To turn your sword into the Warrior Sword!' Zolo touches her sword and a bright\n
+                                 light blinds Victoria. When the light fade her swords is bigger, shinnier, and has a golden hilt. `Wow!\n
+                                 Thank you', Victoria says. With the Warrior sword in her hand Zolo opens up a portal. Victoria looks back\n
+                                 at Zolo one more time and then back at the portal."),
+            exits: vec![11, 13],
+            items: vec![ Item {
+                name: format!("Warrior Sword")
+            }]
+        },
+
+        Room {
+            name: format!("Portal"), // 13
+            description: format!("Victoria takes the portal. She is surrounde this time by a red worm hole. She sees the field she left\n
+                                  behind her and what looks to be her school in front of her. She takes a deep breath and thinks about her\n
+                                  her journey so far. Picking up a sword, the cave, the goblins, the bridge troll, and Zolo the Wizard. She
+                                  opens her eyes and decides it is time to end this. She then chooses her exit."),
+            exits: vec![12, 14],
+        },
+
+        // attack the evil witch
+        Room {
+            name: format!("Victoria's school"), // 14
+            description: format!("Victoria falls out the portal and lands on fer feet in front of the school. There are dark clouds all over\n
+                                  the sky and in front of the school is a figure. The figure has green skin and a point nose covered in oozing
+                                  warts. The greek skinned person also has a dirty tattered dress. This is the Evil Witch! Victoria draws\n
+                                  the Warrior Sword. Victoria shouts, `Time to end this!`"),
+            exits: vec![13, 15],
+        },
+
+        Room {
+            name: format!("Victory"), // 14
+            description: format!("Victoria falls out the portal and lands on fer feet in front of the school. There are dark clouds all over\n
+                                  the sky and in front of the school is a figure. The figure has green skin and a point nose covered in oozing
+                                  warts. The greek skinned person also has a dirty tattered dress. This is the Evil Witch! Victoria draws\n
+                                  the Warrior Sword. Victoria shouts, `Time to end this!`"),
+            exits: vec![13, 15],
+        },
+
     ];
 
     // instansiate the player object which is of type 'Game'
@@ -212,6 +328,7 @@ fn main() {
     player.story();
     player.instruction();
     player.cur_room().look();
+    player.exits();
 
 
     // this for loop and the logic for using stdin is taken from
@@ -229,6 +346,11 @@ fn main() {
 
         // commands records all stdin entered by the player.
         match commands.next() {
+           /* Some("attack")=>{
+
+            }*/
+            
+            
             // when player enters `look` the current room is
             // retrieved and the .look() is executed on that current room
             // the room description is then displayed
@@ -266,6 +388,8 @@ fn main() {
 
                 // displays player moved to new room
                 println!("You moved to {}", player.cur_room().name);
+                player.cur_room().look();
+                player.exits();
             }
 
             // when player enters `inventory` view_inventory is executed
