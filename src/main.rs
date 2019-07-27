@@ -49,18 +49,17 @@ impl Game {
             &self.cur_room().exits.len()
         );
 
-        // loops through the exits vector to display
-        // each elements index, and then the name of
-        // the element at that index.
-        // Example: [0] Bathroom
+        // loops through the exits vector to display each elements index, and then the name of
+        // the element at that index. Example: (0) Bathroom
         for (index, exit) in self.cur_room().exits.iter().enumerate() {
             println!("({}) {}", index, self.rooms[*exit].name);
         }
+       println!("");
     }
 
     // Displays the inventory of the player.
     fn view_inventory(&self) {
-        println!("You have {} items:", self.inventory.len());
+        println!("You have {} items.", self.inventory.len());
 
         // loops through the item vector to display
         // each elements index, and then the name of the
@@ -69,6 +68,7 @@ impl Game {
         for (index, item) in self.inventory.iter().enumerate() {
             println!("({}) {}", index, item.name);
         }
+        println!("");
     }
 
     // function the allows the player to move from one
@@ -91,19 +91,38 @@ impl Game {
         self.inventory.last().unwrap()
     }
 
-    // fn that displays the instructions commands. 
+    fn attack(&mut self, enemy: usize) -> String {
+        let an_enemy: &String = &self.cur_room().enemies[enemy].name.clone();
+       // println!("enemy = {:?}", an_enemy);
+        self.room_mut().enemies.remove(enemy);
+        an_enemy.to_string()
+        //an_enemy.to_string()
+        /*let enemy = self.room_mut().enemies.remove(enemy);
+        let real_enemy = enemy.enemy;
+        println!("enemy = {:?}", enemy);*/
+    }
+
+    fn post_attack(&mut self) {
+        println!("current room name is: {}", self.cur_room().name);
+        if self.cur_room().name == "Path"{
+            self.room_mut().description = format!("Victoria is now walking through the cleared path after defeating the goblin.")
+        }
+    }
+
+    // fn that displays the instructions commands.
     fn instruction(&self) {
-        println!("\nIn command line type in:");
+        println!("In the command line type in:");
         println!("\t`look' to look around the current room");
-        println!("\t`inspect' to inspect the items in the current room.");
+        println!("\t`inspect' to inspect the items in the current room and enemies in the current room.");
         println!("\t`move <room no.>' to switch room.");
         println!("\t`inventory' to view your current inventory.");
-        println!("\t`take <item no.>' to take item from current room.\n");
+        println!("\t`take <item no.>' to take item.");
+        println!("\t`attack <enemey no.>` to attack enemy.")
     }
 
     // displays the story of the game.
     fn story(&self) {
-        println!("\n\tOur story begins with a seven year old girl named Victoria. Like every other school day
+        println!("\tOur story begins with a seven year old girl named Victoria. Like every other school day
         she wakes up and gets ready for school. However, today is a very special day. Today, Victoria will
         walk to school by herself! This is a walk she has done hundred of times since kindergarten. Will she
         make it to school with not problems or is today different? Is today the day she will have to become a
@@ -119,7 +138,7 @@ impl Game {
                     88        88    88       88    88         88           88  d8'  d8' 88     88   88   `8b.  88   `8b. 88 88     88  88   `8b. 
                     88        88    88       88    88         88           88.d8P8.d8P  88     88   88     88  88     88 88 Y8.   .8P  88     88 
                     88888888P dP    dP       dP    88888888P  88888888P    8888' Y88'   88     88   dP     dP  dP     dP dP  `8888P'   dP     dP 
-                    ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+                    ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo\n");
     }
 }
 
@@ -128,7 +147,14 @@ struct Item {
     name: String,
 }
 
+#[derive(Debug)]
 struct Enemy {
+    name: String,
+}
+
+
+
+struct Gift {
     name: String,
 }
 
@@ -140,27 +166,48 @@ struct Room {
     description: String,
     exits: Vec<usize>,
     items: Vec<Item>,
+    enemies: Vec<Enemy>,
+    gifts: Vec<Gift>,
 }
 
 // implemenation of the Room struct
 impl Room {
     // prints the description of the current room the player is in
     fn look(&self) {
-        println!("{}", self.description)
+        println!("\n{}", self.description)
     }
 
     // this function executes when the player enters the 'inspect'
     // command. This function prints out the current room name
     // and the number of items in the room.
     fn inspect(&self) {
-        println!("{} has {} items:", &self.name, &self.items.len());
-
-        // loops through the item vector in the current room
-        // and displays the items index and name
+        println!("{} has {} items.", &self.name, &self.items.len());
         for (index, item) in self.items.iter().enumerate() {
-            println!("\n({}) {}", index, item.name);
+            println!("({}) {}", index, item.name);
         }
+
+        println!("{} has {} enemies.", &self.name, &self.enemies.len());
+        for (index, enemy) in self.enemies.iter().enumerate(){
+            println!("({}) {}", index, enemy.name);
+        }
+
+        println!("");
     }
+
+    /*fn attack(&mut self, enemy:usize) -> &Enemy{
+        let enemy = self.enemies.remove(enemy);
+
+        &enemy
+    }*/
+
+    /*fn take(&mut self, item: usize) -> &Item {
+        // item = the item removed from room
+        let item = self.room_mut().items.remove(item);
+        // item is added to inventory vector
+        self.inventory.push(item);
+        // returns the item pushed.
+        self.inventory.last().unwrap()
+    }*/
 }
 
 fn main() {
@@ -171,30 +218,39 @@ fn main() {
             name: format!("Bedroom"), // 0
             description: format!("Victoria wakes up an changes for school. She finds that her mother and father \nare not home. Being a responsible girl she knows she has to go to school.\n"),
             exits: vec![1],
-            items: vec![]
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         Room {
             name: format!("Living Room"), //1
-            description: format!("Victoria heads to the living room. The living room is clean and she sees her pet cat Stormy sleeping on the couch."),
-            exits: vec![2,0],
-            items: vec![ Item {
+            description: format!("Victoria heads to the living room. In the living room her cat, Stormy, is sleeping on the couch."),
+            exits: vec![0,2],
+            items: vec![],
+            /*[ Item {
                 name: format!("Backpack")
-            }]
+            }],*/
+            enemies: vec![],
+            gifts: vec![],
         },
 
         Room {
             name: format!("Outside Condo Complex"), // 2
             description: format!("Victoria is now outside her condo. Outside the weather is sunny and temperature is mild.\n She walks past the other condos heading towards school."),
-            exits: vec![3,1,4],
-            items: vec![]
+            exits: vec![1,3,4],
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         Room {
             name: format!("Main Street"), // 3
             description: format!("Victoria is now facing the main street the condo complex is of off. The street is to busy to cross and to walk next to."),
             exits: vec![2],
-            items: vec![]
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         // will need to implement enemies once player reaches this room. Will also need to implement hit actions/point possibly
@@ -204,14 +260,20 @@ fn main() {
             exits: vec![2,5],
             items: vec![ Item {
                 name: format!("Sword")
-            }]
+            }],
+            enemies: vec![ Enemy{
+                name: format!("Goblin")
+            }],
+            gifts: vec![]
         },
 
         Room {
             name: format!("Portal"), //5
             description: format!("Victoria is floating through a blue wormhole. She appears to have control of which direction to go."),
             exits: vec![4, 6],
-            items: vec![]
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         Room {
@@ -220,7 +282,9 @@ fn main() {
             exits: vec![5, 7, 8],
             items: vec![ Item {
                 name: format!("Flashlight")
-            }]
+            }],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         // perhaps goblin here or silent cave path
@@ -228,7 +292,11 @@ fn main() {
             name: format!("Noisy cave path"), //7
             description: format!("Victoria takes the noisy cave path. She is scared and hopes the noise is nothing.\n As she points her flashlight around she notices the noise is water dripping down from the walls of the cave."),
             exits: vec![6, 9],
-            items: vec![]
+            items: vec![],
+            enemies: vec![ Enemy {
+                name: format!("Goblin")
+            }],
+            gifts: vec![],
         },
 
         // perhaps gobling here or noisy cave path
@@ -237,7 +305,9 @@ fn main() {
             description: format!("Victoria take the silent cave path. The room as very dark but there appears to be nothing in this cave room.\n Victoria then steps on something hard. She looks down and sees a skeletal remains!\n
                                   Out of nowhere a goblin comes out to attack her!"),
             exits: vec![6, 9],
-            items: vec![]
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         Room {
@@ -247,7 +317,9 @@ fn main() {
             exits: vec![7, 8, 10],
             items: vec![ Item {
                 name: format!("Shiny Ring")
-            }]
+            }],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         // no enemy here
@@ -258,6 +330,9 @@ fn main() {
                                   She hopes her parents are okay. She knows she has to continue to defeat the evil witch. After drinkin some water Victoria places\n
                                   the water bottle in her backpack."),
             exits: vec![9, 11],
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         // enemies: troll, give troll the shiny ring
@@ -266,6 +341,11 @@ fn main() {
             description: format!("Victoria walks towards the bridge and starts to cross it. 'HEY! NO ONE CROSSES THIS BRIDGE WITHOUT PAYING TOLL. I have to save up\n
                                 to buy a new ring since I lost my last one."),
             exits: vec![10, 12],
+            items: vec![],
+            enemies: vec![ Enemy {
+                name: format!("Troll")
+            }],
+            gifts: vec![],
         },
 
         // figure out a way to change sword to Warrior Sword. Additionally, find a way for the wizard to open a portal
@@ -282,16 +362,21 @@ fn main() {
             exits: vec![11, 13],
             items: vec![ Item {
                 name: format!("Warrior Sword")
-            }]
+            }],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         Room {
             name: format!("Portal"), // 13
             description: format!("Victoria takes the portal. She is surrounde this time by a red worm hole. She sees the field she left\n
                                   behind her and what looks to be her school in front of her. She takes a deep breath and thinks about her\n
-                                  her journey so far. Picking up a sword, the cave, the goblins, the bridge troll, and Zolo the Wizard. She
+                                  her journey so far. Picking up a sword, the cave, the goblins, the bridge troll, and Zolo the Wizard. She\n
                                   opens her eyes and decides it is time to end this. She then chooses her exit."),
             exits: vec![12, 14],
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
         // attack the evil witch
@@ -302,15 +387,22 @@ fn main() {
                                   warts. The greek skinned person also has a dirty tattered dress. This is the Evil Witch! Victoria draws\n
                                   the Warrior Sword. Victoria shouts, `Time to end this!`"),
             exits: vec![13, 15],
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
+        // find out what to do once witch is defeated. 
         Room {
-            name: format!("Victory"), // 14
+            name: format!("Victory"), // 15
             description: format!("Victoria falls out the portal and lands on fer feet in front of the school. There are dark clouds all over\n
                                   the sky and in front of the school is a figure. The figure has green skin and a point nose covered in oozing
                                   warts. The greek skinned person also has a dirty tattered dress. This is the Evil Witch! Victoria draws\n
                                   the Warrior Sword. Victoria shouts, `Time to end this!`"),
             exits: vec![13, 15],
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
         },
 
     ];
@@ -322,14 +414,15 @@ fn main() {
         inventory: vec![],
     };
 
-    // will need to make this a function so it can be called to view instruction
-    //println!("Type `look' to look around and 'inspect' to inspect items in room. Type `move <room no>' to switch room");
+    // game title is displayed
     player.game_title();
+    // story is displayed
     player.story();
+    //instructions is displayed
     player.instruction();
-    player.cur_room().look();
-    player.exits();
 
+    player.cur_room().look();
+    //player.exits();
 
     // this for loop and the logic for using stdin is taken from
     // https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure
@@ -341,16 +434,8 @@ fn main() {
         let input = line.unwrap_or_else(|e| panic!("Error occured reading stdin: {}", e));
         let mut commands = input.trim().split_whitespace();
 
-        //player.instruction();
-
-
         // commands records all stdin entered by the player.
         match commands.next() {
-           /* Some("attack")=>{
-
-            }*/
-            
-            
             // when player enters `look` the current room is
             // retrieved and the .look() is executed on that current room
             // the room description is then displayed
@@ -387,7 +472,8 @@ fn main() {
                 player.move_room(room_no);
 
                 // displays player moved to new room
-                println!("You moved to {}", player.cur_room().name);
+                println!("\nYou moved to {}", player.cur_room().name);
+                player.instruction();
                 player.cur_room().look();
                 player.exits();
             }
@@ -408,12 +494,17 @@ fn main() {
             // takes the last 2 strings entered by the user.
             // Example: `take sword`
             Some("take") => {
+                if player.cur_room().items.is_empty(){
+                    player.cur_room().inspect();
+                    println!("There is nothing to take!\n");
+                    continue;
+                }
                 let args: Vec<_> = commands.take(2).collect();
 
                 // if args contains anything but 2 commands
                 // then an error message is displayed
                 if args.len() != 1 {
-                    println!("Incorrect args.");
+                    println!("Incorrect command.");
                     continue;
                 }
                 // gets the item_no from args. If item number entered by
@@ -428,15 +519,50 @@ fn main() {
                     }
                 };
 
-                // calls take() on player and adds items
-                // to players inventory
+                // calls take() on player and adds items to players inventory. variable item stores the name of item taken 
                 let item = player.take(item_no);
 
-                println!("You collected {}", item.name);
+                println!("You collected a {}\n", item.name);
             }
+
+            Some("attack") => {
+                if player.inventory.is_empty(){
+                    println!("You have nothing to attack with!");
+                    continue;
+                } 
+                
+                if player.cur_room().enemies.is_empty(){
+                    player.cur_room().inspect();
+                    println!("There are no enemies to attack. ");
+                    continue;
+                }
+
+                let args: Vec<_> = commands.take(2).collect();
+
+                if args.len() != 1 {
+                    println!("Incorrect command.");
+                    continue;
+                }
+
+                let enemy_no: usize = match args[0].parse() {
+                    Ok(a) => a,
+
+                    Err(e) => {
+                        println!("{}", e);
+                        continue;
+                    }
+                };
+
+                let enemy = player.attack(enemy_no);
+
+                player.post_attack();
+                
+                println!("You attacked the {}\n", enemy);
+            }
+
             // any other case
             _ => {
-                println!("\nPlease enter a proper command!");
+                println!("Please enter a proper command!\n");
                 player.instruction();
             }
         }
