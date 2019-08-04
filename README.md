@@ -19,13 +19,8 @@
   @ https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure  
 
 
-## Example Image of what my game will look like
-  
-  Image is taken from my computer while playing a text based game made by Steve Klabnik. My game will have more 
-  options and text. This a simple example. https://github.com/steveklabnik/adventure
-
-
-![Example]()
+## Example Image of Little Warrior
+![Example](images/Example.png)
 
 ## License Information
 
