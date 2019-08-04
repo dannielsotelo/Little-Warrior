@@ -9,39 +9,32 @@
 // usually as straightforward as adding the #[derive(PartialEq, Debug)] annotation to your struct or enum
 // definition. See Appendix C, “Derivable Traits,” for more details about these and other derivable traits.
 
-// allows program to read standard input and utilized BufRead
-// to be able to read line by line
+// allows program to read standard input and utilized BufRead to be able to read line by line
 use std::io::{stdin, BufRead};
 
-// struct of Game. Contains the current room the game is in,
-// the inventory of the game, and keeps track of all the rooms
-// in the game
+// struct of Game. Contains the current room the game is in, the inventory of the game, and keeps track of all the rooms in the game
+#[derive(Debug, Clone)]
 struct Game {
     current_room: usize,
     inventory: Vec<Item>,
+    //gifts: Vec<Gift>
     rooms: Vec<Room>,
 }
 
-// implemenation for the Game Struct
-// &self is a parameter for all functions
-// inside an `impl` for a struct. Even
-// if the function only prints there still must
-// be an &self as an input parameter for the function
+// implemenation for the Game Struct &self is a parameter for all functions inside an `impl` for a struct. Even
+// if the function only prints there still must be an &self as an input parameter for the function
 impl Game {
     // a getter that returns the current room
     fn cur_room(&self) -> &Room {
         &self.rooms[self.current_room]
     }
 
-    // allows us to modify the items in a room.
-    // used when an item is taken from a room.
-    // the room must be updated to display changes.
+    // allows us to modify the items in a room. Used when an item is taken from a room. The room must be updated to display changes.
     fn room_mut(&mut self) -> &mut Room {
         &mut self.rooms[self.current_room]
     }
 
-    //  First, this fn exits() display the current room
-    //  and the amount of exits in the room.
+    // First, this fn exits() display the current room and the amount of exits in the room.
     fn exits(&self) {
         println!(
             "{} has {} exits:",
@@ -102,22 +95,44 @@ impl Game {
         println!("enemy = {:?}", enemy);*/
     }
 
+    fn drop(&mut self, item: usize) -> Item {
+        // item = the item removed from inventory
+        let item = self.inventory.remove(item);
+        item
+       // let string_item = &item.name;
+        //println!("string_item = {}", string_item);    
+        //self.room_mut().items.push(item);
+        //string_item.to_string()
+    }
+
     fn post_attack(&mut self) {
-        println!("current room name is: {}", self.cur_room().name);
+        //println!("current room name is: {}", self.cur_room().name);
         if self.cur_room().name == "Path"{
-            self.room_mut().description = format!("Victoria is now walking through the cleared path after defeating the goblin.")
+
+            self.room_mut().description = format!("\t\tVictoria has cleared path after defeating the goblin. She can now safely approach the blue portal.")
+        }
+        if self.cur_room().name == "Silent cave path"{
+            self.room_mut().description = format!("\t\tVictoria moves quickly to attack the goblin. The goblin doges Victoria's attack. The Goblin raise its\nhand to attack Victoria. She quickly ducks and the Goblin misses. Victoria again swipes her sword at\nthe Goblin. Critical Hit! The Goblin is defeated. The is section of the cave is now clear.")
+        }
+    }
+
+    fn post_drop(&mut self) {
+        if self.cur_room().name == "Bridge"{
+            self.room_mut().description = format!("\t\tThe Troll, happy with a shiny ring, lets Victoria pass and heads into the cave.");
+            self.room_mut().enemies.clear();
         }
     }
 
     // fn that displays the instructions commands.
     fn instruction(&self) {
-        println!("In the command line type in:");
+        println!("\tIn the command line type in:");
         println!("\t`look' to look around the current room");
         println!("\t`inspect' to inspect the items in the current room and enemies in the current room.");
         println!("\t`move <room no.>' to switch room.");
         println!("\t`inventory' to view your current inventory.");
         println!("\t`take <item no.>' to take item.");
-        println!("\t`attack <enemey no.>` to attack enemy.")
+        println!("\t`attack <enemey no.>` to attack enemy.");
+        println!("\t'drop <item no.>' to drop item. PROTIP: do not drop any weapons or the will be lost forever!!!!");
     }
 
     // displays the story of the game.
@@ -143,17 +158,18 @@ impl Game {
 }
 
 // struct for item. only contains 'name' as a string
+#[derive(Debug, Clone)]
 struct Item {
     name: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Enemy {
     name: String,
 }
 
 
-
+#[derive(Debug, Clone)]
 struct Gift {
     name: String,
 }
@@ -161,6 +177,7 @@ struct Gift {
 // struct of Room. Contains the name of the room as a String,
 // the description of the room as a String, a vector of exits,
 // and a vector of items
+#[derive(Debug, Clone)]
 struct Room {
     name: String,
     description: String,
@@ -216,8 +233,9 @@ fn main() {
     let rooms = vec![
         Room {
             name: format!("Bedroom"), // 0
-            description: format!("Victoria wakes up an changes for school. She finds that her mother and father \nare not home. Being a responsible girl she knows she has to go to school.\n"),
-            exits: vec![1],
+            description: format!("\t\tVictoria wakes up an changes for school. She finds that her mother and father are not home. 
+                Being a responsible girl she knows she has to go to school. She puts on her backpack and prepares to head out."),
+            exits: vec![1, 12],
             items: vec![],
             enemies: vec![],
             gifts: vec![],
@@ -225,19 +243,17 @@ fn main() {
 
         Room {
             name: format!("Living Room"), //1
-            description: format!("Victoria heads to the living room. In the living room her cat, Stormy, is sleeping on the couch."),
+            description: format!("\t\tVictoria heads to the living room. In the living room her cat, Stormy, is sleeping on the couch."),
             exits: vec![0,2],
             items: vec![],
-            /*[ Item {
-                name: format!("Backpack")
-            }],*/
             enemies: vec![],
             gifts: vec![],
         },
 
         Room {
             name: format!("Outside Condo Complex"), // 2
-            description: format!("Victoria is now outside her condo. Outside the weather is sunny and temperature is mild.\n She walks past the other condos heading towards school."),
+            description: format!("\t\tVictoria is now outside her condo. Outside the weather is sunny and temperature is mild.
+                She walks past the other condos heading towards school."),
             exits: vec![1,3,4],
             items: vec![],
             enemies: vec![],
@@ -246,7 +262,7 @@ fn main() {
 
         Room {
             name: format!("Main Street"), // 3
-            description: format!("Victoria is now facing the main street the condo complex is of off. The street is to busy to cross and to walk next to."),
+            description: format!("\t\tVictoria is now facing the main street the condo complex is of off. The street is to busy to cross and to walk next to."),
             exits: vec![2],
             items: vec![],
             enemies: vec![],
@@ -256,7 +272,8 @@ fn main() {
         // will need to implement enemies once player reaches this room. Will also need to implement hit actions/point possibly
         Room {
             name: format!("Path"), //4
-            description: format!("Victoria is walking through a path in a wooden area. She sees a small creature in the middle of the path."),
+            description: format!("\t\tVictoria is walking through a path in a wooden area. She sees a small creature in the middle of the path.
+                There appears to be a blue portal behind the creature."),
             exits: vec![2,5],
             items: vec![ Item {
                 name: format!("Sword")
@@ -269,7 +286,7 @@ fn main() {
 
         Room {
             name: format!("Portal"), //5
-            description: format!("Victoria is floating through a blue wormhole. She appears to have control of which direction to go."),
+            description: format!("\t\tVictoria is floating through a blue wormhole. She appears to have control of which direction to go."),
             exits: vec![4, 6],
             items: vec![],
             enemies: vec![],
@@ -278,7 +295,8 @@ fn main() {
 
         Room {
             name: format!("Portal Cave Dark Zone"), //6
-            description: format!("Victoria falls out of the portal into a dark zone of a cave. \nThe air is stale and the only light in the room is from the blue portal. Maybe there is something in the cave conveniently placed to light our path?"),
+            description: format!("\t\tVictoria falls out of the portal into a dark zone of a cave. The air is stale and the only light in the room
+                is from the blue portal. Maybe there is something in the cave conveniently placed to light our path?"),
             exits: vec![5, 7, 8],
             items: vec![ Item {
                 name: format!("Flashlight")
@@ -290,7 +308,19 @@ fn main() {
         // perhaps goblin here or silent cave path
         Room {
             name: format!("Noisy cave path"), //7
-            description: format!("Victoria takes the noisy cave path. She is scared and hopes the noise is nothing.\n As she points her flashlight around she notices the noise is water dripping down from the walls of the cave."),
+            description: format!("\t\tVictoria takes the noisy cave path. She is scared and hopes the noise is nothing. 
+                As she points her flashlight around she notices the noise is water dripping down from the walls of the cave."),
+            exits: vec![6, 9],
+            items: vec![],
+            enemies: vec![],
+            gifts: vec![],
+        },
+
+        // perhaps gobling here or noisy cave path
+        Room {
+            name: format!("Silent cave path"), // 8
+            description: format!("\t\tVictoria take the silent cave path. The room as very dark but there appears to be nothing in this cave room.
+                Victoria then steps on something hard. She looks down and sees a skeletal remains! Out of nowhere a goblin comes out to attack her!"),
             exits: vec![6, 9],
             items: vec![],
             enemies: vec![ Enemy {
@@ -299,21 +329,10 @@ fn main() {
             gifts: vec![],
         },
 
-        // perhaps gobling here or noisy cave path
-        Room {
-            name: format!("Silent cave path"), // 8
-            description: format!("Victoria take the silent cave path. The room as very dark but there appears to be nothing in this cave room.\n Victoria then steps on something hard. She looks down and sees a skeletal remains!\n
-                                  Out of nowhere a goblin comes out to attack her!"),
-            exits: vec![6, 9],
-            items: vec![],
-            enemies: vec![],
-            gifts: vec![],
-        },
-
         Room {
             name: format!("Light at the end of the cave"), // 9
-            description: format!("After a grueling trek through the cave passages Victoria finally sees daylight! While walking towards the daylight something catches her eye.\n
-                                  There is something shiny on the ground."),
+            description: format!("\t\tAfter a grueling trek through the cave passages Victoria finally sees daylight!
+                While walking towards the daylight something catches her eye. There is something shiny on the ground."),
             exits: vec![7, 8, 10],
             items: vec![ Item {
                 name: format!("Shiny Ring")
@@ -322,13 +341,13 @@ fn main() {
             gifts: vec![],
         },
 
-        // no enemy here
         // if time implement a dead end from that the player has to return back to "outside the cave"
         Room {
             name: format!("Outside the Cave"), // 10
-            description: format!("Finally! Victoria has exited the cave! She opens up her backpack and find a water bottle her dad always packs in her backpack.\n
-                                  She hopes her parents are okay. She knows she has to continue to defeat the evil witch. After drinkin some water Victoria places\n
-                                  the water bottle in her backpack."),
+            description: format!("\t\tFinally! Victoria has exited the cave! There is a small river outside the cave. She is very thirsty
+                and drinks some water from the river. She then sits down outside the cave and rests for a moment. While she rests she 
+                begins to think about her day so far. She hopes her parents are okay. She knows she has to continue to defeat the 
+                evil witch. After a little break she gets up."),
             exits: vec![9, 11],
             items: vec![],
             enemies: vec![],
@@ -338,8 +357,9 @@ fn main() {
         // enemies: troll, give troll the shiny ring
         Room {
             name: format!("Bridge"), // 11
-            description: format!("Victoria walks towards the bridge and starts to cross it. 'HEY! NO ONE CROSSES THIS BRIDGE WITHOUT PAYING TOLL. I have to save up\n
-                                to buy a new ring since I lost my last one."),
+            description: format!("\t\tVictoria walks towards the bridge and starts to cross it. 'HEY! NO ONE CROSSES THIS BRIDGE WITHOUT PAYING TOLL.
+                I have to save up to buy a new ring since I lost my last one.' Says a Troll with purple eyes, green skin, and red claws.
+                Victoria remebers she has a ring."),
             exits: vec![10, 12],
             items: vec![],
             enemies: vec![ Enemy {
@@ -351,14 +371,14 @@ fn main() {
         // figure out a way to change sword to Warrior Sword. Additionally, find a way for the wizard to open a portal
         Room {
             name: format!("Field"), // 12
-            description: format!("After crossing the bridge our Little Warrior rests in the field next to a tree. The shade feels nice\n.
-                                 She starts dozing off when a voice speaks to her. 'Hello little one. I am Zolo the Magical Wizard. I have\n
-                                 watching you through my crystal ball and am impressed with your progress. I know you are on a quest to\n
-                                 the Evil Witch,' said the Zolo. Victoria draws her sword thinking Zolo may attack her. Zolo says, 'No\n
-                                 worries Little Warrior. To turn your sword into the Warrior Sword!' Zolo touches her sword and a bright\n
-                                 light blinds Victoria. When the light fade her swords is bigger, shinnier, and has a golden hilt. `Wow!\n
-                                 Thank you', Victoria says. With the Warrior sword in her hand Zolo opens up a portal. Victoria looks back\n
-                                 at Zolo one more time and then back at the portal."),
+            description: format!("\t\tAfter crossing the bridge our Little Warrior rests in the field next to a tree. The shade feels nice.
+                She starts dozing off when a voice speaks to her. 'Hello little one. I am Zolo the Magical Wizard. I have
+                watching you through my crystal ball and am impressed with your progress. I know you are on a quest to
+                the Evil Witch,' said the Zolo. Victoria draws her sword thinking Zolo may attack her. Zolo says, 'No
+                worries Little Warrior. To turn your sword into the Warrior Sword!' Zolo touches her sword and a bright
+                light blinds Victoria. When the light fade her swords is bigger, shinnier, and has a golden hilt. `Wow!
+                Thank you', Victoria says. With the Warrior sword in her hand Zolo opens up a portal. Victoria looks back
+                at Zolo one more time and then back at the portal."),
             exits: vec![11, 13],
             items: vec![ Item {
                 name: format!("Warrior Sword")
@@ -369,10 +389,10 @@ fn main() {
 
         Room {
             name: format!("Portal"), // 13
-            description: format!("Victoria takes the portal. She is surrounde this time by a red worm hole. She sees the field she left\n
-                                  behind her and what looks to be her school in front of her. She takes a deep breath and thinks about her\n
-                                  her journey so far. Picking up a sword, the cave, the goblins, the bridge troll, and Zolo the Wizard. She\n
-                                  opens her eyes and decides it is time to end this. She then chooses her exit."),
+            description: format!("\t\tVictoria takes the portal. She is surrounde this time by a red worm hole. She sees the field she left
+                behind her and what looks to be her school in front of her. She takes a deep breath and thinks about her
+                her journey so far. Picking up a sword, the cave, the goblins, the bridge troll, and Zolo the Wizard. She
+                opens her eyes and decides it is time to end this. She then chooses her exit."),
             exits: vec![12, 14],
             items: vec![],
             enemies: vec![],
@@ -382,10 +402,10 @@ fn main() {
         // attack the evil witch
         Room {
             name: format!("Victoria's school"), // 14
-            description: format!("Victoria falls out the portal and lands on fer feet in front of the school. There are dark clouds all over\n
-                                  the sky and in front of the school is a figure. The figure has green skin and a point nose covered in oozing
-                                  warts. The greek skinned person also has a dirty tattered dress. This is the Evil Witch! Victoria draws\n
-                                  the Warrior Sword. Victoria shouts, `Time to end this!`"),
+            description: format!("\t\tVictoria falls out the portal and lands on fer feet in front of the school. There are dark clouds all over
+                the sky and in front of the school is a figure. The figure has green skin and a point nose covered in oozing
+                warts. The greek skinned person also has a dirty tattered dress. This is the Evil Witch! Victoria draws
+                the Warrior Sword. Victoria shouts, `Time to end this!`"),
             exits: vec![13, 15],
             items: vec![],
             enemies: vec![],
@@ -395,10 +415,10 @@ fn main() {
         // find out what to do once witch is defeated. 
         Room {
             name: format!("Victory"), // 15
-            description: format!("Victoria falls out the portal and lands on fer feet in front of the school. There are dark clouds all over\n
-                                  the sky and in front of the school is a figure. The figure has green skin and a point nose covered in oozing
-                                  warts. The greek skinned person also has a dirty tattered dress. This is the Evil Witch! Victoria draws\n
-                                  the Warrior Sword. Victoria shouts, `Time to end this!`"),
+            description: format!("\t\tVictoria falls out the portal and lands on fer feet in front of the school. There are dark clouds all over
+                the sky and in front of the school is a figure. The figure has green skin and a point nose covered in oozing
+                warts. The greek skinned person also has a dirty tattered dress. This is the Evil Witch! Victoria draws
+                the Warrior Sword. Victoria shouts, `Time to end this!`"),
             exits: vec![13, 15],
             items: vec![],
             enemies: vec![],
@@ -468,6 +488,11 @@ fn main() {
                     }
                 };
 
+                if !player.cur_room().enemies.is_empty(){
+                    println!("There is an enemy in your path. You must take care of the enemy before proceeding.\n");
+                    continue;
+                }
+
                 // player is moved to new room with move_room() fn
                 player.move_room(room_no);
 
@@ -484,14 +509,12 @@ fn main() {
                 player.view_inventory();
             }
 
-            // when player enters 'inspect' the inspect() function is executed
-            // on the current room and the items in the room are displayed
+            // when player enters 'inspect' the inspect() function is executed on the current room and the items in the room are displayed
             Some("inspect") => {
                 player.cur_room().inspect();
             }
 
-            // when player enters 'take' an args vector is created. The vector
-            // takes the last 2 strings entered by the user.
+            // when player enters 'take' an args vector is created. The vector takes the last 2 strings entered by the user.
             // Example: `take sword`
             Some("take") => {
                 if player.cur_room().items.is_empty(){
@@ -501,14 +524,12 @@ fn main() {
                 }
                 let args: Vec<_> = commands.take(2).collect();
 
-                // if args contains anything but 2 commands
-                // then an error message is displayed
+                // if args contains anything but 2 commands then an error message is displayed
                 if args.len() != 1 {
                     println!("Incorrect command.");
                     continue;
                 }
-                // gets the item_no from args. If item number entered by
-                // player is not one of the item numbers allowed the program
+                // gets the item_no from args. If item number entered by player is not one of the item numbers allowed the program
                 // prints standard error message and terminates
                 let item_no: usize = match args[0].parse() {
                     Ok(a) => a,
@@ -525,25 +546,31 @@ fn main() {
                 println!("You collected a {}\n", item.name);
             }
 
+            // when attack command is enter player will start attacking enemy if certain conditions are met
             Some("attack") => {
+                // if the players inventory is empty then they cannot attack
                 if player.inventory.is_empty(){
                     println!("You have nothing to attack with!");
                     continue;
                 } 
                 
+                // if there are not enemies in the room then player cannot attack
                 if player.cur_room().enemies.is_empty(){
                     player.cur_room().inspect();
                     println!("There are no enemies to attack. ");
                     continue;
                 }
 
+                // collect 2 arguments for input
                 let args: Vec<_> = commands.take(2).collect();
-
+ 
+                // if there are not 2 args then print error statement
                 if args.len() != 1 {
                     println!("Incorrect command.");
                     continue;
                 }
 
+                // get enemy number
                 let enemy_no: usize = match args[0].parse() {
                     Ok(a) => a,
 
@@ -553,11 +580,50 @@ fn main() {
                     }
                 };
 
+                // attack enemy by their enemy number
                 let enemy = player.attack(enemy_no);
 
+                // this will change description of room after enemy is attacked
                 player.post_attack();
                 
                 println!("You attacked the {}\n", enemy);
+            }
+
+            Some("drop") => {
+                // if the players inventory is empty then they cannot give anything
+                if player.inventory.is_empty(){
+                    println!("You have nothing to give!");
+                    continue;
+                } 
+
+                // collect 2 arguments for input
+                let args: Vec<_> = commands.take(2).collect();
+ 
+                // if there are not 2 args then print error statement
+                if args.len() != 1 {
+                    println!("Incorrect command.");
+                    continue;
+                }
+
+                // get enemy number
+                let item_no: usize = match args[0].parse() {
+                    Ok(a) => a,
+
+                    Err(e) => {
+                        println!("{}", e);
+                        continue;
+                    }
+                };
+
+                //println!("args 1 = {}", args[1]);
+
+                // calls take() on player and adds items to players inventory. variable item stores the name of item taken 
+                let item = player.drop(item_no);
+
+                println!("You dropped a {}\n", item.name);
+
+                player.post_drop();
+
             }
 
             // any other case
