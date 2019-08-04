@@ -25,7 +25,7 @@
   options and text. This a simple example. https://github.com/steveklabnik/adventure
 
 
-![Example](images/Example.png)
+![Example]()
 
 ## License Information
 
