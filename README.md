@@ -3,9 +3,9 @@
 # Little Warrior
 
 ### How to download and run game
-`git clone https://github.com/dannielsotelo/Little-Warrior.git`
-`cd Little-Warrior`
-`cargo run`
+`git clone https://github.com/dannielsotelo/Little-Warrior.git`  
+`cd Little-Warrior`  
+`cargo run`  
 
 ## Project Description
   
