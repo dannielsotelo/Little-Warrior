@@ -9,12 +9,12 @@
 // usually as straightforward as adding the #[derive(PartialEq, Debug)] annotation to your struct or enum
 // definition. See Appendix C, “Derivable Traits,” for more details about these and other derivable traits.
 
-use little_warrior::rooms;
-use little_warrior::game;
-use little_warrior::rooms::Room;
-use little_warrior::game::Item;
-use little_warrior::game::Enemy;
-use little_warrior::game::Game;
+use little_warrior::rooms::*;
+use little_warrior::game::*;
+//use little_warrior::rooms::Room;
+//use little_warrior::game::Item;
+//use little_warrior::game::Enemy;
+//use little_warrior::game::Game;
 use std::io::stdin;
 use std::io::BufRead;
 

@@ -34,7 +34,7 @@ impl Game {
         for (index, exit) in self.cur_room().exits.iter().enumerate() {
             println!("({}) {}", index, self.rooms[*exit].name);
         }
-        println!("");
+        println!();
     }
 
     // Displays the inventory of the player.
@@ -46,7 +46,7 @@ impl Game {
         for (index, item) in self.inventory.iter().enumerate() {
             println!("({}) {}", index, item.name);
         }
-        println!("");
+        println!();
     }
 
     // function the allows the player to move from one room to another room. current room updates to the
@@ -76,8 +76,7 @@ impl Game {
 
     // fn to drop an item. item is removed from inventory vector and returned
     pub fn drop(&mut self, item: usize) -> Item {
-        let item = self.inventory.remove(item);
-        item
+        self.inventory.remove(item)
     }
 
     // fn that edits the description of a room post attack
