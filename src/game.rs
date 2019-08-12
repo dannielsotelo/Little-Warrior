@@ -156,6 +156,7 @@ pub struct Item {
     pub name: String,
 }
 
+// struct for Enemy. Only contains 'name' as a string
 #[derive(Debug, Clone)]
 pub struct Enemy {
     pub name: String,
