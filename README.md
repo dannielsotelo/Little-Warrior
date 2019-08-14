@@ -5,7 +5,7 @@
 ### How to download and run game
 `git clone https://github.com/dannielsotelo/Little-Warrior.git`  
 `cd Little-Warrior`  
-`cargo run`  
+`cargo run`
 
 ## Project Description
   
@@ -22,7 +22,7 @@
 
 #### Referenced
 
-  for this project I heavily referenced Jude Southworth's github  
+  for this project I referenced Jude Southworth's github  
   @ https://github.com/JellyWX/adventure-rs/blob/85903392d74b58889ede2a84b6dc5308f02594d6/src/main.rs  
   I also referenced a code review thread on their project   
   @ https://codereview.stackexchange.com/questions/205066/beginner-rust-text-adventure 
@@ -33,6 +33,18 @@
 
 ## Example Image of Little Warrior
 ![Example](images/Example.png)
+
+### What in game needs to be improved
+  The first would like to improve how the ```rooms``` are implemented. Currently, in ```main.rs```  
+  I create a vector of  ```rooms``` and I hate it. I kept on adding features to my game and never  
+  went back to find an easier or better looking implementation for all the ```rooms``` in the game.  
+  I want to improve this game because I want my daughter, and soon to be second daughter, to play  
+  this game. When I was 3/4 complete with the game I found a ```crate``` that keeps track of rooms,  
+  enemies, and even items but, it was written in ```JSON```. Now that I have more time I want to  
+  fully implement that ```crate```. I also want to implement graphics in some way. I think there  
+  are crates to do this. After graphich as I would want to implement sound. This way the game would  
+  be playable and keep my daughters' attention because right now, the game is pretty much a choose  
+  your own adventure game. 
 
 ## License Information
 
