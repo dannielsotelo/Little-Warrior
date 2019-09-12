@@ -2,6 +2,9 @@
 
 # Little Warrior
 
+## Install Rust  
+To install Rust follow directions [here](https://www.rust-lang.org/tools/install)
+
 ### How to download and run game
 `git clone https://github.com/dannielsotelo/Little-Warrior.git`  
 `cd Little-Warrior`  
